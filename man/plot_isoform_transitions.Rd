@@ -8,9 +8,10 @@ plot_isoform_transitions(
   scht_obj,
   gene,
   cell_type_order,
+  selected_isoforms = NULL,
   min_prop = 0.05,
   smooth = TRUE,
-  color_palette = NULL
+  colour_palette = NULL
 )
 }
 \arguments{
@@ -20,11 +21,13 @@ plot_isoform_transitions(
 
 \item{cell_type_order}{Vector specifying the order of cell types (required for this plot)}
 
-\item{min_prop}{Minimum proportion to display (default: 0.05)}
+\item{selected_isoforms}{Optional vector of isoform names to plot. If provided, only these isoforms will be shown (ignoring min_prop)}
+
+\item{min_prop}{Minimum proportion to display (default: 0.05). Ignored if selected_isoforms is provided}
 
 \item{smooth}{Apply smoothing to lines (default: TRUE)}
 
-\item{color_palette}{Colour palette to use (default: viridis plasma)}
+\item{colour_palette}{Colour palette to use (default: viridis plasma)}
 }
 \value{
 A ggplot object that can be printed or saved
@@ -35,11 +38,41 @@ different cell types. This visualisation is particularly useful for
 developmental trajectories or other ordered cell type progressions.
 }
 \examples{
-\dontrun{
-# Assuming you have a Single-Cell Hierarchical Tensor object
-# Create isoform transition plot for a gene along a developmental trajectory
-cell_types <- c("Progenitor", "Intermediate", "Mature")
-plot_isoform_transitions(scht_obj, "GENE1", cell_type_order = cell_types)
-}
+# Load example data and create SCHT
+data(gene_counts_blood)
+data(transcript_counts_blood)
+data(transcript_info)
+data(sample2stage)
+
+scht_obj <- create_scht(
+  gene_counts = gene_counts_blood,
+  transcript_counts = transcript_counts_blood,
+  transcript_info = transcript_info,
+  cell_info = sample2stage,
+  qc_params = list(
+    min_genes_per_cell = 4000,       
+    max_genes_per_cell = 10000,      
+    min_cells_expressing = 0.02,   
+    min_expr = 1e-6
+  ),
+  n_hvg = 3000,
+  verbose = FALSE
+)
+
+# Example 1: Create isoform transition plot
+plot_isoform_transitions(
+  scht_obj, 
+  gene = "Atl1",
+  cell_type_order = c("AEC", "HEC", "T1_pre_HSC", "T2_pre_HSC", 
+                      "E12", "E14", "Adult_HSC")
+)
+
+# Example 2: Another gene with custom colors
+plot_isoform_transitions(
+  scht_obj, 
+  gene = "Mapk13",
+  cell_type_order = c("AEC", "HEC", "E12", "E14", "Adult_HSC"),
+  colour_palette = RColorBrewer::brewer.pal(5, "Set2")
+)
 
 }
