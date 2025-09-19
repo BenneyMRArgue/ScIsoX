@@ -96,8 +96,10 @@ plot_threshold_visualisations <- function(threshold_plots, ncol = 3, title = "Th
 #' @keywords internal
 .get_tc_palette <- function() {
   list(
-    main = c("#ec6e66", "#7392c6", "#81b095", "#867bb9"),
-    highlight = "#f7ac53",  
+    #main = c("#ec6e66", "#7392c6", "#81b095", "#867bb9"), "#82b952" "#59ccc4" "#ac59cc" #d6ace6
+    main = c("#f58383","#597bcc","#82b952","#ac59cc"),
+    #highlight = "#f7ac53",  
+    highlight = "#f9cb1c",  
     gradient = viridis::viridis(10),
     background = "white",
     grid = "#EEEEEE",
@@ -392,13 +394,13 @@ plot_threshold_visualisations <- function(threshold_plots, ncol = 3, title = "Th
   
   # Create label positions for quadrants
   label_positions <- data.frame(
-    quadrant = c(q1, q2, q3, q4),
-    x = c(0.9, 0.2, 0.2, 0.9),  # Q1, Q2, Q3, Q4 positions
-    y = c(0.85, 0.85, 0.15, 0.15)   # Q1, Q2, Q3, Q4 positions
+   quadrant = c(q1, q2, q3, q4),
+   x = c(0.9, 0.2, 0.2, 0.9),  # Q1, Q2, Q3, Q4 positions
+   y = c(0.85, 0.85, 0.15, 0.15)   # Q1, Q2, Q3, Q4 positions
   )
   
   # Merge with statistics
-  label_data <- merge(label_positions, quadrant_df, by = "quadrant")
+  label_data <- merge(label_positions, quadrant_df, by = "quadrant") # were listed first
   
   # Return all prepared data structures
   return(list(
@@ -547,21 +549,21 @@ plot_tc_landscape <- function(tc_results,
   )
   
   # Add quadrant labels with gene counts and percentages
-  p <- p + ggplot2::geom_label(
-    data = label_data,
-    ggplot2::aes(
-      x = x, 
-      y = y,
-      label = paste0(short_name, ": ", count, " genes (", percentage, "%)"),
-      fill = quadrant
-    ),
-    size = 6,
-    fontface = "bold",
-    color = "white",
-    alpha = 0.9,
-    label.size = 0,
-    show.legend = FALSE
-  )
+  # p <- p + ggplot2::geom_label(
+  #   data = label_data,
+  #   ggplot2::aes(
+  #     x = x, 
+  #     y = y,
+  #     label = paste0(short_name, ": ", count, " genes (", percentage, "%)"),
+  #     fill = quadrant
+  #   ),
+  #   size = 6,
+  #   fontface = "bold",
+  #   color = "white",
+  #   alpha = 0.9,
+  #   label.size = 0,
+  #   show.legend = FALSE
+  # )
   
   # Add highlighted points if available
   if(nrow(highlight_data_vis) > 0) {
@@ -1115,8 +1117,11 @@ plot_complexity_ridges <- function(tc_results,
   }
   
   # Define default colour palettes
+  #global_palette <- c(
+  #  "#4C72B0", "#55A868", "#C44E52", "#8172B3", "#CCB974", "#64B5CD", "#BA82B9"
+  #)
   global_palette <- c(
-    "#4C72B0", "#55A868", "#C44E52", "#8172B3", "#CCB974", "#64B5CD", "#BA82B9"
+    "#f58383", "#f99c1c", "#f9cb1c","#b5ec85", "#59ccc4", "#bdebe7", "#d6ace6"
   )
   
   metric_palette <- c(
@@ -2081,9 +2086,9 @@ plot_complexity_radar <- function(tc_metrics, genes, scale_type = "global") {
   # Create user-friendly labels for metrics
   metric_labels <- c(
     "Intra-cellular\nIsoform Diversity",
-    "Inter-cellular\nIsoform Diversity",
-    "Intra-cell-type\nHeterogeneity",
-    "Inter-cell-type\nSpecificity",
+    "Inter-cellular\nIsoform Diversity", 
+    "Intra-cell-type\nHeterogeneity", # Intra-condition\nHetero...
+    "Inter-cell-type\nSpecificity", # Condition\nSpecificity
     "Heterogeneity\nVariability",
     "Difference\nVariability",
     "Co-expression\nVariability"
@@ -2150,7 +2155,8 @@ plot_complexity_radar <- function(tc_metrics, genes, scale_type = "global") {
   # Create custom colors for genes
   n_genes <- length(valid_genes)
   if(n_genes <= 8) {
-    gene_colors <- RColorBrewer::brewer.pal(max(3, n_genes), "Set1")[1:n_genes]
+    #gene_colors <- RColorBrewer::brewer.pal(max(3, n_genes), "Set1")[1:n_genes]
+    gene_colors <- c("#bdebe7", "#59ccc4", "#82b952", "#b5ec85", "#fbe077", "#f9cb1c", "#f99c1c", "#f58383")[1:n_genes]
   } else {
     gene_colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set1"))(n_genes)
   }
